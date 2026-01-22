@@ -1,20 +1,18 @@
-import { Route, Routes } from "react-router"
-import AuthProvider from "./providers/AuthProvider"
-import ThemeProvider from "./providers/ThemeProvider"
-import Login from "./components/Login"
-import Home from "./components/home"
+import { BrowserRouter } from "react-router-dom";
+import AuthProvider from "./providers/AuthProvider";
+import ThemeProvider from "./providers/ThemeProvider";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
-  return <div>
-    <AuthProvider>
+  return (
+    
+      <AuthProvider>
         <ThemeProvider>
-          <Routes>  
-          <Route index element=<Home/> />
-          <Route path="/login" element=<Login/> />
-          </Routes>
+          <AppRoutes />
         </ThemeProvider>
       </AuthProvider>
-  </div>
+    
+  );
 }
 
-export default App
+export default App;
