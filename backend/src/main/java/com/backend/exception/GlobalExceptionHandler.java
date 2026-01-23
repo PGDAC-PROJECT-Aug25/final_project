@@ -29,6 +29,33 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNAUTHORIZED
         );
     }
+    
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDuplicate(DuplicateResourceException ex) {
+        return new ResponseEntity<>(
+                new ApiResponse<>(false, ex.getMessage(), null),
+                HttpStatus.CONFLICT
+        );
+    }
+
+    
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleNotFound(ResourceNotFoundException ex) {
+        return new ResponseEntity<>(
+                new ApiResponse<>(false, ex.getMessage(), null),
+                HttpStatus.NOT_FOUND
+        );
+    }
+    
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Void>> handleIllegalArgs(IllegalArgumentException ex) {
+        return new ResponseEntity<>(
+            new ApiResponse<>(false, ex.getMessage(), null),
+            HttpStatus.BAD_REQUEST
+        );
+    }
+
+
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

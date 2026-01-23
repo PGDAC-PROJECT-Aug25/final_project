@@ -21,9 +21,11 @@ import com.backend.repository.ProviderRepository;
 import com.backend.repository.UserRepository;
 import com.backend.service.AuthService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
