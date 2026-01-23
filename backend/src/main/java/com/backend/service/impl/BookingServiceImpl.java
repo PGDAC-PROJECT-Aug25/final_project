@@ -1,7 +1,10 @@
 package com.backend.service.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
+import com.backend.dto.BookingHistoryResponse;
 import com.backend.dto.CreateBookingRequest;
 import com.backend.entity.Booking;
 import com.backend.entity.BookingStatus;
@@ -38,26 +41,49 @@ public class BookingServiceImpl implements BookingService {
         BusSchedule schedule = scheduleRepository.findById(request.getScheduleId())
                 .orElseThrow(() -> new ResourceNotFoundException("Schedule not found"));
 
-        BusSeat seat = seatRepository
-                .findForUpdate(request.getScheduleId(), request.getSeatNumber())
-                .orElseThrow(() -> new ResourceNotFoundException("Seat not found"));
+        for (String seatNo : request.getSeatNumbers()) {
 
-        if (seat.getIsBooked()) {
-            throw new IllegalStateException("Seat already booked");
+            BusSeat seat = seatRepository
+                    .findForUpdate(request.getScheduleId(), seatNo)
+                    .orElseThrow(() -> new ResourceNotFoundException("Seat not found: " + seatNo));
+
+            if (seat.getIsBooked()) {
+                throw new ResourceNotFoundException("Seat already booked: " + seatNo);
+            }
+
+            seat.setIsBooked(true);
+
+            Booking booking = new Booking();
+            booking.setUser(user);
+            booking.setSchedule(schedule);
+            booking.setSeatNumber(seatNo);
+            booking.setStatus(BookingStatus.CONFIRMED);
+
+            bookingRepository.save(booking);
         }
-
-        // Mark seat as booked
-        seat.setIsBooked(true);
-
-        // Create booking
-        Booking booking = new Booking();
-        booking.setUser(user);
-        booking.setSchedule(schedule);
-        booking.setSeatNumber(seat.getSeatNumber());
-        booking.setStatus(BookingStatus.CONFIRMED);
-
-        bookingRepository.save(booking);
-        // seat update is auto-flushed on transaction commit
     }
+    
+    @Override
+    public List<BookingHistoryResponse> getBookingHistory(Long userId) {
+
+        userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        List<Booking> bookings =
+                bookingRepository.findByUserIdOrderByCreatedAtDesc(userId);
+
+        return bookings.stream().map(b -> new BookingHistoryResponse(
+                b.getId(),
+                b.getSchedule().getBus().getBusNumber(),
+                b.getSchedule().getRoute().getSource(),
+                b.getSchedule().getRoute().getDestination(),
+                b.getSchedule().getTravelDate().toString(),
+                b.getSchedule().getDepartureTime().toLocalTime().toString(),
+                b.getSeatNumber(),
+                b.getSchedule().getPrice(),
+                b.getStatus().name()
+        )).toList();
+    }
+
 }
 
