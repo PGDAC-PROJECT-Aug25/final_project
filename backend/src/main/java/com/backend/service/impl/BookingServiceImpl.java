@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.backend.dto.BookingHistoryResponse;
+import com.backend.dto.CancelBookingsRequest;
 import com.backend.dto.CreateBookingRequest;
 import com.backend.entity.Booking;
 import com.backend.entity.BookingStatus;
@@ -32,7 +33,6 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
 
     @Override
-    @Transactional
     public void createBooking(CreateBookingRequest request) {
 
         User user = userRepository.findById(request.getUserId())
@@ -83,6 +83,50 @@ public class BookingServiceImpl implements BookingService {
                 b.getSchedule().getPrice(),
                 b.getStatus().name()
         )).toList();
+    }
+    
+    @Override
+    public void cancelBooking(Long bookingId) {
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+        if (booking.getStatus() == BookingStatus.CANCELLED) {
+            throw new IllegalStateException("Booking already cancelled");
+        }
+
+        BusSeat seat = seatRepository
+                .findForUpdate(booking.getSchedule().getId(), booking.getSeatNumber())
+                .orElseThrow(() -> new ResourceNotFoundException("Seat not found"));
+
+        seat.setIsBooked(false);
+        booking.setStatus(BookingStatus.CANCELLED);
+    }
+
+    @Override
+    public void cancelBookings(CancelBookingsRequest request) {
+
+        List<Booking> bookings =
+                bookingRepository.findByIdIn(request.getBookingIds());
+
+        if (bookings.size() != request.getBookingIds().size()) {
+            throw new ResourceNotFoundException("One or more bookings not found");
+        }
+
+        for (Booking booking : bookings) {
+
+            if (booking.getStatus() == BookingStatus.CANCELLED) {
+                throw new IllegalStateException(
+                        "Booking already cancelled: " + booking.getId());
+            }
+
+            BusSeat seat = seatRepository
+                    .findForUpdate(booking.getSchedule().getId(), booking.getSeatNumber())
+                    .orElseThrow(() -> new ResourceNotFoundException("Seat not found"));
+
+            seat.setIsBooked(false);
+            booking.setStatus(BookingStatus.CANCELLED);
+        }
     }
 
 }
