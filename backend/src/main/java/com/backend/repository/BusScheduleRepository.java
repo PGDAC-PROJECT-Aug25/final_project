@@ -23,6 +23,8 @@ public interface BusScheduleRepository extends JpaRepository<BusSchedule, Long> 
 	          AND s.status = 'ACTIVE'
 	          AND b.status = 'ACTIVE'
 	    """)
-	    List<BusSchedule> searchSchedules(String source, String destination, LocalDate date);      
+	    List<BusSchedule> searchSchedules(String source, String destination, LocalDate date);  
+	
+	List<BusSchedule> findByBusId(Long busId);
 
 }
