@@ -1,0 +1,100 @@
+package com.backend.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.backend.dto.*;
+import com.backend.entity.*;
+import com.backend.exception.ResourceNotFoundException;
+import com.backend.repository.*;
+import com.backend.service.AdminService;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class AdminServiceImpl implements AdminService {
+
+    private final UserRepository userRepository;
+    private final BusRepository busRepository;
+    private final BookingRepository bookingRepository;
+    private final ProviderRepository providerRepository;
+
+    @Override
+    public List<AdminUserResponse> getAllUsers() {
+
+        List<User> users = userRepository.findAll();
+        List<AdminUserResponse> result = new ArrayList<>();
+
+        for (User u : users) {
+            AdminUserResponse dto = new AdminUserResponse(
+                    u.getId(),
+                    u.getName(),
+                    u.getEmail(),
+                    u.getRole().name(),
+                    u.getIsActive(),
+                    u.getEmailVerified()
+            );
+            result.add(dto);
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<AdminBusResponse> getAllBuses() {
+
+        List<Bus> buses = busRepository.findAll();
+        List<AdminBusResponse> result = new ArrayList<>();
+
+        for (Bus b : buses) {
+            AdminBusResponse dto = new AdminBusResponse(
+                    b.getId(),
+                    b.getBusNumber(),
+                    b.getBusType().name(),
+                    b.getTotalSeats(),
+                    b.getStatus().name(),
+                    b.getProvider().getUser().getName()
+            );
+            result.add(dto);
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<AdminBookingResponse> getAllBookings() {
+
+        List<Booking> bookings = bookingRepository.findAll();
+        List<AdminBookingResponse> result = new ArrayList<>();
+
+        for (Booking b : bookings) {
+            AdminBookingResponse dto = new AdminBookingResponse(
+                    b.getId(),
+                    b.getUser().getName(),
+                    b.getSchedule().getBus().getBusNumber(),
+                    b.getSchedule().getRoute().getSource(),
+                    b.getSchedule().getRoute().getDestination(),
+                    b.getSchedule().getTravelDate().toString(),
+                    b.getSeatNumber(),
+                    b.getSchedule().getPrice(),
+                    b.getStatus().name()
+            );
+            result.add(dto);
+        }
+
+        return result;
+    }
+
+    @Override
+    public void verifyProvider(Long providerId) {
+
+        ServiceProvider p = providerRepository.findById(providerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Provider not found"));
+
+        p.setVerified(true);
+        providerRepository.save(p);
+    }
+}

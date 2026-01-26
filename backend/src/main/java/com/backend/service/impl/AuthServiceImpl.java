@@ -42,6 +42,8 @@ public class AuthServiceImpl implements AuthService {
     	if (userRepository.existsByEmail(request.getEmail())) {
             throw new DuplicateEmailException("Email already exists");
         }
+    	
+    	//check phone duplicate ph no
 
         
         User user = modelMapper.map(request, User.class);

@@ -1,9 +1,11 @@
 package com.backend.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import com.backend.dto.*;
+import com.backend.dto.JwtDTO;
 import com.backend.service.UserService;
 import com.backend.util.ApiResponse;
 
@@ -17,10 +19,19 @@ public class UserController {
 
     private final UserService userService;
 
+    private Long getLoggedInUserId() {
+        JwtDTO dto = (JwtDTO) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+        return dto.getUserId();
+    }
+
     // ---- Customer ----
-    @GetMapping("/{userId}/customer-profile")
-    public ResponseEntity<ApiResponse<CustomerProfileResponse>> getCustomer(
-            @PathVariable Long userId) {
+    @GetMapping("/customer-profile")
+    public ResponseEntity<ApiResponse<CustomerProfileResponse>> getCustomer() {
+
+        Long userId = getLoggedInUserId();
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Customer profile fetched",
@@ -28,19 +39,23 @@ public class UserController {
         );
     }
 
-    @PutMapping("/{userId}/customer-profile")
+    @PutMapping("/customer-profile")
     public ResponseEntity<ApiResponse<Void>> updateCustomer(
-            @PathVariable Long userId,
             @Valid @RequestBody UpdateCustomerProfileRequest request) {
 
+        Long userId = getLoggedInUserId();
+
         userService.updateCustomerProfile(userId, request);
-        return ResponseEntity.ok(new ApiResponse<>(true, "Customer profile updated", null));
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Customer profile updated", null)
+        );
     }
 
     // ---- Provider ----
-    @GetMapping("/{userId}/provider-profile")
-    public ResponseEntity<ApiResponse<ProviderProfileResponse>> getProvider(
-            @PathVariable Long userId) {
+    @GetMapping("/provider-profile")
+    public ResponseEntity<ApiResponse<ProviderProfileResponse>> getProvider() {
+
+        Long userId = getLoggedInUserId();
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Provider profile fetched",
@@ -48,22 +63,28 @@ public class UserController {
         );
     }
 
-    @PutMapping("/{userId}/provider-profile")
+    @PutMapping("/provider-profile")
     public ResponseEntity<ApiResponse<Void>> updateProvider(
-            @PathVariable Long userId,
             @Valid @RequestBody UpdateProviderProfileRequest request) {
 
+        Long userId = getLoggedInUserId();
+
         userService.updateProviderProfile(userId, request);
-        return ResponseEntity.ok(new ApiResponse<>(true, "Provider profile updated", null));
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Provider profile updated", null)
+        );
     }
 
     // ---- Common ----
-    @PutMapping("/{userId}/change-password")
+    @PutMapping("/change-password")
     public ResponseEntity<ApiResponse<Void>> changePassword(
-            @PathVariable Long userId,
             @Valid @RequestBody ChangePasswordRequest request) {
 
+        Long userId = getLoggedInUserId();
+
         userService.changePassword(userId, request);
-        return ResponseEntity.ok(new ApiResponse<>(true, "Password updated", null));
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Password updated", null)
+        );
     }
 }
