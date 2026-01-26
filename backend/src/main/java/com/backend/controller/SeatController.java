@@ -17,6 +17,7 @@ public class SeatController {
 
     private final BusService busService;
 
+    //seat controllers
     @GetMapping("/schedules/{scheduleId}/seats")
     public ResponseEntity<ApiResponse<List<SeatResponse>>> getSeats(
             @PathVariable Long scheduleId) {
