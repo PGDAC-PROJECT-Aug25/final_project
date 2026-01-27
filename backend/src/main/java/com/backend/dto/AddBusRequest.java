@@ -8,15 +8,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AddBusRequest {
+public class  AddBusRequest {
 
     @NotBlank
     private String busNumber;
 
     @NotNull
-    private String  busType;   // e.g. AC_SLEEPER
+    private String busType;   // e.g. AC_SLEEPER
 
     @NotNull
     @Min(1)
-    private Integer  totalSeats;
+    private Integer totalSeats;
 }

@@ -40,26 +40,28 @@ public class AuthServiceImpl implements AuthService {
     public void registerCustomer(CustomerRegisterRequest request) {
 
     	if (userRepository.existsByEmail(request.getEmail())) {
-            throw new DuplicateEmailException("Email already exists");
+            throw new DuplicateEmailException("Email Already Exists");
         }
+    	
+    	//check phone duplicate ph no
 
         
-        User user = modelMapper.map(request, User.class);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.ROLE_CUSTOMER);
+        User user = modelMapper.map( request, User.class );
+        user.setPassword( passwordEncoder.encode( request.getPassword()) );
+        user.setRole( Role.ROLE_CUSTOMER );
 
-        user = userRepository.save(user);
+        user = userRepository.save( user );
 
        
-        Customer customer = modelMapper.map(request, Customer.class);
-        customer.setUser(user);
-        customer.setDob(request.getDob());
+        Customer customer = modelMapper.map( request, Customer.class );
+        customer.setUser( user );
+        customer.setDob( request.getDob() );
 
         customerRepository.save(customer);
     }
 
     @Override
-    public void registerProvider(ProviderRegisterRequest request) {
+    public void registerProvider( ProviderRegisterRequest request ) {
 
         
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -67,27 +69,27 @@ public class AuthServiceImpl implements AuthService {
         }
 
        
-        User user = modelMapper.map(request, User.class);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.ROLE_PROVIDER);
+        User user = modelMapper.map( request, User.class );
+        user.setPassword( passwordEncoder.encode(request.getPassword()) );
+        user.setRole( Role.ROLE_PROVIDER );
 
         user = userRepository.save(user);
 
         // Map DTO → ServiceProvider
-        ServiceProvider sp = modelMapper.map(request, ServiceProvider.class);
+        ServiceProvider sp = modelMapper.map( request, ServiceProvider.class );
         sp.setUser(user);
 
         providerRepository.save(sp);
     }
 
 	@Override
-	public LoginResponse login(LoginRequest request) {
+	public LoginResponse login( LoginRequest request ) {
 
-	    User user = userRepository.findByEmail(request.getEmail())
-	            .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
+	    User user = userRepository.findByEmail( request.getEmail() )
+	            .orElseThrow(() -> new InvalidCredentialsException( "Invalid User Email or Password" ));
 
 	    if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-	        throw new InvalidCredentialsException("Invalid email or password");
+	        throw new InvalidCredentialsException("Invalid User Email or Password");
 	    }
 
 	    return new LoginResponse(
