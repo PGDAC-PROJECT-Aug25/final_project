@@ -64,10 +64,10 @@ public class BookingServiceImpl implements BookingService {
     }
     
     @Override
-    public List<BookingHistoryResponse> getBookingHistory(Long userId) {
+    public List<BookingHistoryResponse> getBookingHistory( Long userId ) {
 
         userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException( "User not found" ));
 
         List<Booking> bookings =
                 bookingRepository.findByUserIdOrderByCreatedAtDesc(userId);
@@ -92,7 +92,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
 
         if (booking.getStatus() == BookingStatus.CANCELLED) {
-            throw new IllegalStateException("Booking already cancelled");
+            throw new IllegalStateException("Booking already cancelled ");
         }
 
         BusSeat seat = seatRepository
@@ -107,10 +107,10 @@ public class BookingServiceImpl implements BookingService {
     public void cancelBookings(CancelBookingsRequest request) {
 
         List<Booking> bookings =
-                bookingRepository.findByIdIn(request.getBookingIds());
+                bookingRepository.findByIdIn( request.getBookingIds() );
 
         if (bookings.size() != request.getBookingIds().size()) {
-            throw new ResourceNotFoundException("One or more bookings not found");
+            throw new ResourceNotFoundException( "One or more bookings not found" );
         }
 
         for (Booking booking : bookings) {
@@ -122,10 +122,10 @@ public class BookingServiceImpl implements BookingService {
 
             BusSeat seat = seatRepository
                     .findForUpdate(booking.getSchedule().getId(), booking.getSeatNumber())
-                    .orElseThrow(() -> new ResourceNotFoundException("Seat not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException( "Seat not found" ));
 
-            seat.setIsBooked(false);
-            booking.setStatus(BookingStatus.CANCELLED);
+            seat.setIsBooked( false );
+            booking.setStatus( BookingStatus.CANCELLED );
         }
     }
 
