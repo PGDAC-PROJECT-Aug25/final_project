@@ -3,6 +3,7 @@ package com.backend.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.dto.BookingHistoryResponse;
 import com.backend.dto.CancelBookingsRequest;
 import com.backend.dto.CreateBookingRequest;
+import com.backend.dto.JwtDTO;
 import com.backend.service.BookingService;
 import com.backend.util.ApiResponse;
 
@@ -39,9 +41,14 @@ public class BookingController {
     }
     
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<ApiResponse<List<BookingHistoryResponse>>> getHistory(
-            @PathVariable Long userId) {
+    @GetMapping("/my")
+    public ResponseEntity<ApiResponse<List<BookingHistoryResponse>>> getHistory() {
+    	JwtDTO dto = (JwtDTO) SecurityContextHolder
+    	        .getContext()
+    	        .getAuthentication()
+    	        .getPrincipal();
+
+    	Long userId = dto.getUserId();
 
         List<BookingHistoryResponse> history =
                 bookingService.getBookingHistory(userId);
