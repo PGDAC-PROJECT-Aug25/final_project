@@ -14,9 +14,9 @@ public class AddBusRequest {
     private String busNumber;
 
     @NotNull
-    private String busType;   // e.g. AC_SLEEPER
+    private String  busType;   // e.g. AC_SLEEPER
 
     @NotNull
     @Min(1)
-    private Integer totalSeats;
+    private Integer  totalSeats;
 }
