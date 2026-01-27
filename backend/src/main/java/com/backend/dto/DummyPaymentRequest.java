@@ -14,6 +14,8 @@ public class DummyPaymentRequest {
     @NotEmpty
     private List<Long> bookingIds;
 
+    
+    
     @NotNull
-    private Double amount;
+    private Double  amount;
 }

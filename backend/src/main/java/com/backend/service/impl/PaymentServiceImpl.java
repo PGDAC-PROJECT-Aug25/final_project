@@ -48,7 +48,7 @@ public class PaymentServiceImpl implements PaymentService {
         Payment p = new Payment();
         p.setAmount(request.getAmount());
         p.setStatus(PaymentStatus.SUCCESS);
-        p.setTransactionId("TXN-" + System.currentTimeMillis());
+        p.setTransactionId("TXN-" +  System.currentTimeMillis());
         p.setUser(user);
 
         paymentRepository.save(p);

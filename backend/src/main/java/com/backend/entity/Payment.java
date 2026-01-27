@@ -11,14 +11,14 @@ import lombok.Setter;
 public class Payment extends BaseEntity {
 
     @Column(nullable = false)
-    private Double amount;
+    private Double  amount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentStatus status;
 
     @Column(name = "transaction_id", nullable = false, unique = true)
-    private String transactionId;
+    private String transactionId  ;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
