@@ -26,5 +26,8 @@ public interface BusScheduleRepository extends JpaRepository<BusSchedule, Long> 
 	    List<BusSchedule> searchSchedules(String source, String destination, LocalDate date);  
 	
 	List<BusSchedule> findByBusId(Long busId);
+	
+	Long countByBusProviderId(Long providerId);
+
 
 }
