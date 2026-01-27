@@ -97,4 +97,23 @@ public class AdminServiceImpl implements AdminService {
         p.setVerified(true);
         providerRepository.save(p);
     }
+
+    @Override
+    public AdminSummaryResponse getSummary() {
+
+        Double revenue = bookingRepository.totalRevenue();
+        Long buses = busRepository.count();
+        Long bookings = bookingRepository.count();
+        Long customers = userRepository.countByRole(Role.ROLE_CUSTOMER);
+        Long providers = providerRepository.count();
+
+        return new AdminSummaryResponse(
+                revenue,
+                buses,
+                bookings,
+                customers,
+                providers
+        );
+    }
+
 }

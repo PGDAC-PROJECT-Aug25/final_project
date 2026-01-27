@@ -12,4 +12,7 @@ public interface AdminService {
     List<AdminBookingResponse> getAllBookings();
 
     void verifyProvider(Long providerId);
+
+    AdminSummaryResponse getSummary();
+
 }

@@ -46,4 +46,12 @@ public class AdminController {
                 new ApiResponse<>(true, "Provider verified", null)
         );
     }
+    
+    @GetMapping("/analytics/summary")
+    public ResponseEntity<ApiResponse<AdminSummaryResponse>> adminSummary() {
+        return ResponseEntity.ok(
+            new ApiResponse<>(true, "Admin summary fetched", adminService.getSummary())
+        );
+    }
+
 }
