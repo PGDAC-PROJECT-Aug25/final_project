@@ -48,14 +48,15 @@ public class BusServiceImpl implements BusService {
 
     @Override
     public void addBus(Long providerId, AddBusRequest request) {
-
-        ServiceProvider provider = providerRepository.findById(providerId)
+    	
+    	ServiceProvider provider = providerRepository.findById(providerId)
+    			
                 .orElseThrow(() -> new ResourceNotFoundException("Service Provider not found"));
-        
+    	
         if (busRepository.existsByProviderIdAndBusNumber(providerId, request.getBusNumber())) {
+        	
             throw new DuplicateResourceException("Bus with this number already exists for this provider");
         }
-
 
         Bus bus = modelMapper.map(request, Bus.class);
         bus.setProvider(provider);

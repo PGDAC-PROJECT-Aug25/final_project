@@ -11,11 +11,18 @@ import com.backend.dto.UpdateBusRequest;
 
 public interface BusService {
     void addBus(Long providerId, AddBusRequest request);
+    
     void addSchedule(Long providerId, AddScheduleRequest request);
+    
     List<SearchBusResponse> searchBuses(String from, String to, String date);
+    
     List<SeatResponse> getSeatsBySchedule(Long scheduleId);
+    
     List<ProviderDashboardBusResponse> getProviderDashboard(Long providerId);
+    
     void updateBus(Long providerId , Long busId, UpdateBusRequest request);
+    
 	void changeBusStatus(Long providerId, Long busId, String status);
+	
 	void cancelSchedule(Long providerId, Long scheduleId);
 }
