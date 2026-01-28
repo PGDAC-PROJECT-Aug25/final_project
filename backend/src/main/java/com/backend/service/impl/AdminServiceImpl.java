@@ -42,7 +42,8 @@ public class AdminServiceImpl implements AdminService {
 
         return result;
     }
-
+    
+    //admin to get all buses 
     @Override
     public List<AdminBusResponse> getAllBuses() {
 
