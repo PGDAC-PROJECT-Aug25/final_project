@@ -18,6 +18,15 @@ public class AdminController {
 
     private final AdminService adminService;
 
+    
+    @GetMapping("/buses")
+    public ResponseEntity<ApiResponse<List<AdminBusResponse>>> buses() {
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Buses fetched", adminService.getAllBuses())
+        );
+    }
+    
+    
     @GetMapping("/users")
     public ResponseEntity<ApiResponse<List<AdminUserResponse>>> users() {
         return ResponseEntity.ok(
@@ -25,12 +34,7 @@ public class AdminController {
         );
     }
 
-    @GetMapping("/buses")
-    public ResponseEntity<ApiResponse<List<AdminBusResponse>>> buses() {
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, "Buses fetched", adminService.getAllBuses())
-        );
-    }
+    
 
     @GetMapping("/bookings")
     public ResponseEntity<ApiResponse<List<AdminBookingResponse>>> bookings() {
