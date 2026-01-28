@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.backend.dto.CustomerRegisterRequest;
 import com.backend.dto.LoginRequest;
-import com.backend.dto.LoginResponse;
 import com.backend.dto.ProviderRegisterRequest;
+import com.backend.entity.ServiceProvider;
+import com.backend.exception.IllegalStateException;
+import com.backend.exception.ResourceNotFoundException;
+import com.backend.repository.ProviderRepository;
 import com.backend.security.JwtUtils;
 import com.backend.security.UserPrincipal;
 import com.backend.service.AuthService;
@@ -28,7 +30,8 @@ public class AuthController {
 
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
-	private final JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
+    private final ProviderRepository providerRepository;
 
     @PostMapping("/register/customer")
     public ResponseEntity<String> registerCustomer(
@@ -45,21 +48,35 @@ public class AuthController {
         authService.registerProvider(request);
         return ResponseEntity.ok("Service Provider registered successfully");
     }
-    
+
     @PostMapping("/login")
     public ResponseEntity<?> login(
             @Valid @RequestBody LoginRequest request) {
-        
-       // LoginResponse response = authService.login(request);
-    	Authentication holder=new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
-      
-    	Authentication fullyAuth = authenticationManager.authenticate(holder);
-    	
-    	UserPrincipal principal=(UserPrincipal) fullyAuth.getPrincipal();
+
+        Authentication holder =
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(), request.getPassword());
+
+        Authentication fullyAuth = authenticationManager.authenticate(holder);
+
+        UserPrincipal principal = (UserPrincipal) fullyAuth.getPrincipal();
+
+        //PROVIDER VERIFICATION CHECK
+        if ("ROLE_PROVIDER".equals(principal.getUserRole())) {
+        	System.out.println("******************"+principal.getUserRole());
+            ServiceProvider provider = providerRepository
+                    .findByUserId(principal.getUserId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Provider profile not found"));
+
+            if (!Boolean.TRUE.equals(provider.getVerified())) {
+                throw new IllegalStateException("Your account is not verified by admin yet");
+            }
+        }
+
+        String token = jwtUtils.generateToken(principal);
+
         return ResponseEntity.ok(
-                new ApiResponse<>(true, "Login successful", jwtUtils.generateToken(principal))
+                new ApiResponse<>(true, "Login successful", token)
         );
     }
-
 }
-

@@ -1,7 +1,7 @@
 package com.backend.exception;
 
 @SuppressWarnings("serial")
-public class IllegalStateException extends Exception {
+public class IllegalStateException extends RuntimeException {
 	
 	public IllegalStateException(String message)
 	{

@@ -1,34 +1,13 @@
 import axiosInstance from "../api/axiosInstance";
 
-/* ============================
-   CUSTOMER SIGNUP
-============================ */
-export const customerSignup = async (payload) => {
-  const response = await axiosInstance.post(
-    "/customer/signup",
-    payload
-  );
-  return response.data;
+export const login = (data) => {
+  return axiosInstance.post("/auth/login", data);
 };
 
-/* ============================
-   SERVICE PROVIDER SIGNUP
-============================ */
-export const providerSignup = async (payload) => {
-  const response = await axiosInstance.post(
-    "/provider/signup",
-    payload
-  );
-  return response.data;
+export const registerCustomer = (data) => {
+  return axiosInstance.post("/auth/register/customer", data);
 };
 
-/* ============================
-   LOGIN
-============================ */
-export const loginUser = async (payload) => {
-  const response = await axiosInstance.post(
-    "/auth/login",
-    payload
-  );
-  return response.data;
+export const registerProvider = (data) => {
+  return axiosInstance.post("/auth/register/provider", data);
 };

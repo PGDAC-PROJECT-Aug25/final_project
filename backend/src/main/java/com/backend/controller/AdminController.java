@@ -19,6 +19,7 @@ public class AdminController {
     private final AdminService adminService;
 
     
+
     @GetMapping("/buses")
     public ResponseEntity<ApiResponse<List<AdminBusResponse>>> buses() {
         return ResponseEntity.ok(
@@ -26,15 +27,20 @@ public class AdminController {
         );
     }
     
-    
     @GetMapping("/users")
     public ResponseEntity<ApiResponse<List<AdminUserResponse>>> users() {
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Users fetched", adminService.getAllUsers())
         );
     }
-
     
+    @PutMapping("/providers/{providerId}/verify")
+    public ResponseEntity<ApiResponse<Void>> verify(@PathVariable Long providerId) {
+        adminService.verifyProvider(providerId);
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Provider verified", null)
+        );
+    }
 
     @GetMapping("/bookings")
     public ResponseEntity<ApiResponse<List<AdminBookingResponse>>> bookings() {
@@ -43,13 +49,6 @@ public class AdminController {
         );
     }
 
-    @PutMapping("/providers/{providerId}/verify")
-    public ResponseEntity<ApiResponse<Void>> verify(@PathVariable Long providerId) {
-        adminService.verifyProvider(providerId);
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, "Provider verified", null)
-        );
-    }
     
     @GetMapping("/analytics/summary")
     public ResponseEntity<ApiResponse<AdminSummaryResponse>> adminSummary() {

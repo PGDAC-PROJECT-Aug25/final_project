@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AddBusRequest {
+public class  AddBusRequest {
 
     @NotBlank
     private String busNumber;
