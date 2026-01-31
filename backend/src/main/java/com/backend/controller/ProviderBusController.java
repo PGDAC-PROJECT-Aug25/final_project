@@ -45,9 +45,11 @@ public class ProviderBusController {
         busService.addBus(providerId, request);
 
         return ResponseEntity.ok(
-                new ApiResponse<>(true, "Bus added successfully", null)
+                new ApiResponse<>(true, "Bus added successfully ", null)
         );
     }
+    
+    
 
     //Add Bus Schedule API
     @PostMapping("/schedules")

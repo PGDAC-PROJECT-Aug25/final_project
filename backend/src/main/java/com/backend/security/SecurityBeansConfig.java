@@ -34,7 +34,8 @@ public class SecurityBeansConfig {
 
         http.authorizeHttpRequests(request -> request
 
-                // ---- Public Endpoints ----
+       
+        		// Public Endpoint
                 .requestMatchers(
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
@@ -44,26 +45,26 @@ public class SecurityBeansConfig {
                         "/auth/login"
                 ).permitAll()
 
-                // Public search
+                 // Public search
                 .requestMatchers(HttpMethod.GET, "/buses/search").permitAll()
                 .requestMatchers(HttpMethod.GET, "/schedules/*/seats").permitAll()
-
-                // ---- Customer ----
-                .requestMatchers("/bookings/**").hasRole("CUSTOMER")
-                .requestMatchers("/users/customer-profile").hasRole("CUSTOMER")
-
-                // ---- Provider ----
-                .requestMatchers("/provider/**").hasRole("PROVIDER")
-                .requestMatchers("/users/provider-profile").hasRole("PROVIDER")
-
-                // ---- Common (Customer + Provider + Admin) ----
+                
+                 //   Customer
+                .requestMatchers( "/bookings/**" ).hasRole( "CUSTOMER" )
+                .requestMatchers( "/users/customer-profile" ).hasRole( "CUSTOMER" )
+                
+                 //   Provider
+                .requestMatchers("/provider/**").hasRole( "PROVIDER" )
+                .requestMatchers("/users/provider-profile").hasRole( "PROVIDER")
+                
+                 //   Common ( Customer + Provider + Admin )
                 .requestMatchers("/users/change-password")
                 .hasAnyRole("CUSTOMER", "PROVIDER", "ADMIN")
-
-                // ---- Admin ----
+                
+                 //   Admin
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-
-                // Everything else must be authenticated
+                
+                //   Everything else must be authenticated
                 .anyRequest().authenticated()
         )
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -72,7 +73,7 @@ public class SecurityBeansConfig {
     }
 
     @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+    AuthenticationManager authenticationManager( AuthenticationConfiguration config)
             throws Exception {
         return config.getAuthenticationManager();
     }
