@@ -11,7 +11,10 @@ import com.backend.dto.UpdateBusRequest;
 
 public interface BusService {
     void addBus(Long providerId, AddBusRequest request);
+    
+    //Bus Schedule API
     void addSchedule(Long providerId, AddScheduleRequest request);
+    
     List<SearchBusResponse> searchBuses(String from, String to, String date);
     List<SeatResponse> getSeatsBySchedule(Long scheduleId);
     List<ProviderDashboardBusResponse> getProviderDashboard(Long providerId);

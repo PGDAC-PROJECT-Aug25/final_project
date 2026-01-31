@@ -49,30 +49,35 @@ public class ProviderBusController {
         );
     }
 
+    //Add Bus Schedule API
     @PostMapping("/schedules")
     public ResponseEntity<?> addSchedule(@Valid @RequestBody AddScheduleRequest request) {
 
         Long providerId = getProviderIdFromToken();
+        
         busService.addSchedule(providerId, request);
 
         return ResponseEntity.ok(
+        		
                 new ApiResponse<>(true, "Schedule added successfully", null)
         );
     }
-
+    
+    //service provider dashboard
     @GetMapping("/dashboard")
     public ResponseEntity<?> dashboard() {
 
         Long providerId = getProviderIdFromToken();
 
         List<ProviderDashboardBusResponse> data =
-                busService.getProviderDashboard(providerId);
+        		busService.getProviderDashboard(providerId);
 
         return ResponseEntity.ok(
-                new ApiResponse<>(true, "Provider dashboard fetched", data)
+        	new ApiResponse<>(true, "Provider dashboard fetched", data)
         );
     }
 
+  //Update existing bus information
     @PutMapping("/buses/{busId}")
     public ResponseEntity<?> updateBus(
             @PathVariable Long busId,
@@ -85,9 +90,12 @@ public class ProviderBusController {
                 new ApiResponse<>(true, "Bus Information Updated", null)
         );
     }
-
+    
+    
     @PutMapping("/buses/{busId}/status")
+    
     public ResponseEntity<?> changeStatus(
+    		
             @PathVariable Long busId,
             @Valid @RequestBody ChangeBusStatusRequest request) {
 
