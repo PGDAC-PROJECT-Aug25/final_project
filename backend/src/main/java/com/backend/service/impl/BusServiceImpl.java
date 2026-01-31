@@ -72,9 +72,7 @@ public class BusServiceImpl implements BusService {
     @Override
     public void addSchedule(Long providerId, AddScheduleRequest request) {
     	
-    	
-
-        ServiceProvider provider = providerRepository.findById(providerId)
+    	ServiceProvider provider = providerRepository.findById(providerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Service Provider not found"));
 
         Bus bus = busRepository.findById(request.getBusId())
@@ -92,40 +90,43 @@ public class BusServiceImpl implements BusService {
     	    throw new DuplicateResourceException("Schedule already exists for this bus at the given time");
     	}
 
-
         // Find or create route
         BusRoute route = routeRepository
+        		
                 .findBySourceIgnoreCaseAndDestinationIgnoreCase(
-                        request.getSource(), request.getDestination())
-                .orElseGet(() -> {
-                    BusRoute r = new BusRoute();
-                    r.setSource(request.getSource());
-                    r.setDestination(request.getDestination());
-                    return routeRepository.save(r);
+                		
+                       request.getSource(), request.getDestination())
+                 .orElseGet(() -> {
+                     BusRoute r = new BusRoute();
+                     r.setSource(request.getSource());
+                     r.setDestination(request.getDestination());
+                     return routeRepository.save(r);
                 });
 
         // Create schedule
+        
         BusSchedule schedule = new BusSchedule();
-        schedule.setBus(bus);
-        schedule.setRoute(route);
-        schedule.setTravelDate(LocalDate.parse(request.getTravelDate()));
-        schedule.setDepartureTime(LocalDateTime.parse(request.getDepartureTime()));
-        schedule.setArrivalTime(LocalDateTime.parse(request.getArrivalTime()));
-        schedule.setPrice(request.getPrice());
+        
+         schedule.setBus(bus);
+         schedule.setRoute(route);
+         schedule.setTravelDate(LocalDate.parse(request.getTravelDate()));
+         schedule.setDepartureTime(LocalDateTime.parse(request.getDepartureTime()));
+         schedule.setArrivalTime(LocalDateTime.parse(request.getArrivalTime()));
+         schedule.setPrice(request.getPrice());
 
         schedule = scheduleRepository.save(schedule);
 
-        // Auto-generate seats
-        List<BusSeat> seats = new ArrayList<>();
-        for (int i = 1; i <= bus.getTotalSeats(); i++) {
-            BusSeat seat = new BusSeat();
-            seat.setSchedule(schedule);
-            seat.setSeatNumber("S" + i);
-            seats.add(seat);
-        }
+         // Auto-generate seats
+         List<BusSeat> seats = new ArrayList<>();
+         for (int i = 1; i <= bus.getTotalSeats(); i++) {
+             BusSeat seat = new BusSeat();
+             seat.setSchedule(schedule);
+             seat.setSeatNumber("S" + i);
+             seats.add(seat);
+         }
 
-        seatRepository.saveAll(seats);
-    }
+         seatRepository.saveAll(seats);
+     }
     
     @Override
     public List<SearchBusResponse> searchBuses(String from, String to, String date) {
