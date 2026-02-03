@@ -262,10 +262,12 @@ public class BusServiceImpl implements BusService {
 
 
 
-
+	//change bus statuss
 	@Override
-	public void changeBusStatus(Long providerId, Long busId, String status) {
+	public void changeBusStatus (Long providerId, Long busId, String status) {
+		
 		ServiceProvider provider = providerRepository.findById(providerId)
+				
 	            .orElseThrow(() -> new ResourceNotFoundException("Service Provider not found"));
 
 	    Bus bus = busRepository.findById(busId)
@@ -277,12 +279,16 @@ public class BusServiceImpl implements BusService {
 	    
 	    BusStatus newStatus;
 	    try {
+	    	
 	        newStatus = BusStatus.valueOf(status.toUpperCase());
+	        
 	    } catch (IllegalArgumentException ex) {
+	    	
 	        throw new IllegalArgumentException("Invalid status. Use ACTIVE or INACTIVE");
 	    }
 
 	    bus.setStatus(newStatus);
+	    
 	    busRepository.save(bus);
 		
 	}

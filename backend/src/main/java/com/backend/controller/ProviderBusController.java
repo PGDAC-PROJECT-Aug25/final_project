@@ -94,6 +94,7 @@ public class ProviderBusController {
     }
     
     
+    //Change Bus Status API
     @PutMapping("/buses/{busId}/status")
     
     public ResponseEntity<?> changeStatus(
@@ -102,7 +103,8 @@ public class ProviderBusController {
             @Valid @RequestBody ChangeBusStatusRequest request) {
 
         Long providerId = getProviderIdFromToken();
-        busService.changeBusStatus(providerId, busId, request.getStatus());
+        
+        busService.changeBusStatus(providerId, busId,  request.getStatus() );
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Bus status updated", null)
