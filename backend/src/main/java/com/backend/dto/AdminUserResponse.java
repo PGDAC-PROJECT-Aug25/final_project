@@ -8,10 +8,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class AdminUserResponse {
-    private Long userId;
+    private Long  userId;
     private String name;
-    private String email;
-    private String role;
+    private String  email;
+    private String  role;
     private Boolean isActive;
-    private Boolean emailVerified;
+    private Boolean  emailVerified;
 }

@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class AdminSummaryResponse {
-    private Double totalRevenue;
-    private Long totalBuses;
-    private Long totalBookings;
+    private Double  totalRevenue;
+    private Long  totalBuses;
+    private Long  totalBookings;
     private Long totalCustomers;
-    private Long totalProviders;
+    private Long  totalProviders;
 }
