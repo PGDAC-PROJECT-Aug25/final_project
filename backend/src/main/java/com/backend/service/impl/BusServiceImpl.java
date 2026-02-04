@@ -296,10 +296,12 @@ public class BusServiceImpl implements BusService {
 
 
 
-
+	 //cancel booking 
 	@Override
 	public void cancelSchedule(Long providerId, Long scheduleId) {
+		
 		ServiceProvider provider = providerRepository.findById(providerId)
+				
 	            .orElseThrow(() -> new ResourceNotFoundException("Service Provider not found"));
 
 	    BusSchedule schedule = scheduleRepository.findById(scheduleId)
@@ -308,8 +310,9 @@ public class BusServiceImpl implements BusService {
 	    if (!schedule.getBus().getProvider().getId().equals(provider.getId())) {
 	        throw new ResourceNotFoundException("Schedule does not belong to this provider");
 	    }
-
+	    
 	    if (schedule.getStatus() == ScheduleStatus.INACTIVE) {
+	    	
 	        throw new IllegalStateException("Schedule already cancelled");
 	    }
 

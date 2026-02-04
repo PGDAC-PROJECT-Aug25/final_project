@@ -24,6 +24,7 @@ public interface BusService {
     void updateBus(Long providerId , Long busId, UpdateBusRequest request);
     
 	void changeBusStatus (Long providerId,  Long busId,  String status);
-	
-	void cancelSchedule(Long providerId, Long scheduleId);
+		
+		//Cancel schedule
+		void cancelSchedule ( Long providerId, Long scheduleId );
 }
