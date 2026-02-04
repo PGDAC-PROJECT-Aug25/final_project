@@ -110,16 +110,20 @@ public class ProviderBusController {
                 new ApiResponse<>(true, "Bus status updated", null)
         );
     }
-
+    
+    //secure schedule cancellation for service provider with ownership validation
     @PutMapping("/schedules/{scheduleId}/cancel")
+    
     public ResponseEntity<?> cancelSchedule(
-            @PathVariable Long scheduleId) {
+    		
+            @PathVariable  Long  scheduleId ) {
 
-        Long providerId = getProviderIdFromToken();
-        busService.cancelSchedule(providerId, scheduleId);
+        Long  providerId  =  getProviderIdFromToken();
+        
+        busService.cancelSchedule(providerId , scheduleId);
 
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, "Schedule cancelled", null)
+         return  ResponseEntity.ok(
+                new  ApiResponse<>(true, "Schedule cancelled", null)
         );
     }
 
