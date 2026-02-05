@@ -46,34 +46,41 @@ public class ProviderBusController {
         busService.addBus(providerId, request);
 
         return ResponseEntity.ok(
-                new ApiResponse<>(true, "Bus added successfully", null)
+                new ApiResponse<>(true, "Bus added successfully ", null)
         );
     }
+    
+    
 
+    //Add Bus Schedule API
     @PostMapping("/schedules")
     public ResponseEntity<?> addSchedule(@Valid @RequestBody AddScheduleRequest request) {
 
         Long providerId = getProviderIdFromToken();
+        
         busService.addSchedule(providerId, request);
 
         return ResponseEntity.ok(
+        		
                 new ApiResponse<>(true, "Schedule added successfully", null)
         );
     }
-
+    
+    //service provider dashboard
     @GetMapping("/dashboard")
     public ResponseEntity<?> dashboard() {
 
         Long providerId = getProviderIdFromToken();
 
         List<ProviderDashboardBusResponse> data =
-                busService.getProviderDashboard(providerId);
+        		busService.getProviderDashboard(providerId);
 
         return ResponseEntity.ok(
-                new ApiResponse<>(true, "Provider dashboard fetched", data)
+        	new ApiResponse<>(true, "Provider dashboard fetched", data)
         );
     }
 
+  //Update existing bus information
     @PutMapping("/buses/{busId}")
     public ResponseEntity<?> updateBus(
             @PathVariable Long busId,
@@ -86,29 +93,38 @@ public class ProviderBusController {
                 new ApiResponse<>(true, "Bus Information Updated", null)
         );
     }
-
+    
+    
+    //Change Bus Status API
     @PutMapping("/buses/{busId}/status")
+    
     public ResponseEntity<?> changeStatus(
+    		
             @PathVariable Long busId,
             @Valid @RequestBody ChangeBusStatusRequest request) {
 
         Long providerId = getProviderIdFromToken();
-        busService.changeBusStatus(providerId, busId, request.getStatus());
+        
+        busService.changeBusStatus(providerId, busId,  request.getStatus() );
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Bus status updated", null)
         );
     }
-
+    
+    //secure schedule cancellation for service provider with ownership validation
     @PutMapping("/schedules/{scheduleId}/cancel")
+    
     public ResponseEntity<?> cancelSchedule(
-            @PathVariable Long scheduleId) {
+    		
+            @PathVariable  Long  scheduleId ) {
 
-        Long providerId = getProviderIdFromToken();
-        busService.cancelSchedule(providerId, scheduleId);
+        Long  providerId  =  getProviderIdFromToken();
+        
+        busService.cancelSchedule(providerId , scheduleId);
 
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, "Schedule cancelled", null)
+         return  ResponseEntity.ok(
+                new  ApiResponse<>(true, "Schedule cancelled", null)
         );
     }
 

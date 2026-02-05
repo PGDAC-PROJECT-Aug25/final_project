@@ -48,14 +48,15 @@ public class BusServiceImpl implements BusService {
 
     @Override
     public void addBus(Long providerId, AddBusRequest request) {
-
-        ServiceProvider provider = providerRepository.findById(providerId)
+    	
+    	ServiceProvider provider = providerRepository.findById(providerId)
+    			
                 .orElseThrow(() -> new ResourceNotFoundException("Service Provider not found"));
-        
+    	
         if (busRepository.existsByProviderIdAndBusNumber(providerId, request.getBusNumber())) {
+        	
             throw new DuplicateResourceException("Bus with this number already exists for this provider");
         }
-
 
         Bus bus = modelMapper.map(request, Bus.class);
         bus.setProvider(provider);
@@ -71,9 +72,7 @@ public class BusServiceImpl implements BusService {
     @Override
     public void addSchedule(Long providerId, AddScheduleRequest request) {
     	
-    	
-
-        ServiceProvider provider = providerRepository.findById(providerId)
+    	ServiceProvider provider = providerRepository.findById(providerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Service Provider not found"));
 
         Bus bus = busRepository.findById(request.getBusId())
@@ -91,40 +90,43 @@ public class BusServiceImpl implements BusService {
     	    throw new DuplicateResourceException("Schedule already exists for this bus at the given time");
     	}
 
-
         // Find or create route
         BusRoute route = routeRepository
+        		
                 .findBySourceIgnoreCaseAndDestinationIgnoreCase(
-                        request.getSource(), request.getDestination())
-                .orElseGet(() -> {
-                    BusRoute r = new BusRoute();
-                    r.setSource(request.getSource());
-                    r.setDestination(request.getDestination());
-                    return routeRepository.save(r);
+                		
+                       request.getSource(), request.getDestination())
+                 .orElseGet(() -> {
+                     BusRoute r = new BusRoute();
+                     r.setSource(request.getSource());
+                     r.setDestination(request.getDestination());
+                     return routeRepository.save(r);
                 });
 
         // Create schedule
+        
         BusSchedule schedule = new BusSchedule();
-        schedule.setBus(bus);
-        schedule.setRoute(route);
-        schedule.setTravelDate(LocalDate.parse(request.getTravelDate()));
-        schedule.setDepartureTime(LocalDateTime.parse(request.getDepartureTime()));
-        schedule.setArrivalTime(LocalDateTime.parse(request.getArrivalTime()));
-        schedule.setPrice(request.getPrice());
+        
+         schedule.setBus(bus);
+         schedule.setRoute(route);
+         schedule.setTravelDate(LocalDate.parse(request.getTravelDate()));
+         schedule.setDepartureTime(LocalDateTime.parse(request.getDepartureTime()));
+         schedule.setArrivalTime(LocalDateTime.parse(request.getArrivalTime()));
+         schedule.setPrice(request.getPrice());
 
         schedule = scheduleRepository.save(schedule);
 
-        // Auto-generate seats
-        List<BusSeat> seats = new ArrayList<>();
-        for (int i = 1; i <= bus.getTotalSeats(); i++) {
-            BusSeat seat = new BusSeat();
-            seat.setSchedule(schedule);
-            seat.setSeatNumber("S" + i);
-            seats.add(seat);
-        }
+         // Auto-generate seats
+         List<BusSeat> seats = new ArrayList<>();
+         for (int i = 1; i <= bus.getTotalSeats(); i++) {
+             BusSeat seat = new BusSeat();
+             seat.setSchedule(schedule);
+             seat.setSeatNumber("S" + i);
+             seats.add(seat);
+         }
 
-        seatRepository.saveAll(seats);
-    }
+         seatRepository.saveAll(seats);
+     }
     
     @Override
     public List<SearchBusResponse> searchBuses(String from, String to, String date) {
@@ -260,10 +262,12 @@ public class BusServiceImpl implements BusService {
 
 
 
-
+	//change bus statuss
 	@Override
-	public void changeBusStatus(Long providerId, Long busId, String status) {
+	public void changeBusStatus (Long providerId, Long busId, String status) {
+		
 		ServiceProvider provider = providerRepository.findById(providerId)
+				
 	            .orElseThrow(() -> new ResourceNotFoundException("Service Provider not found"));
 
 	    Bus bus = busRepository.findById(busId)
@@ -275,12 +279,16 @@ public class BusServiceImpl implements BusService {
 	    
 	    BusStatus newStatus;
 	    try {
+	    	
 	        newStatus = BusStatus.valueOf(status.toUpperCase());
+	        
 	    } catch (IllegalArgumentException ex) {
+	    	
 	        throw new IllegalArgumentException("Invalid status. Use ACTIVE or INACTIVE");
 	    }
 
 	    bus.setStatus(newStatus);
+	    
 	    busRepository.save(bus);
 		
 	}
@@ -288,10 +296,12 @@ public class BusServiceImpl implements BusService {
 
 
 
-
+	 //cancel booking 
 	@Override
 	public void cancelSchedule(Long providerId, Long scheduleId) {
+		
 		ServiceProvider provider = providerRepository.findById(providerId)
+				
 	            .orElseThrow(() -> new ResourceNotFoundException("Service Provider not found"));
 
 	    BusSchedule schedule = scheduleRepository.findById(scheduleId)
@@ -300,8 +310,9 @@ public class BusServiceImpl implements BusService {
 	    if (!schedule.getBus().getProvider().getId().equals(provider.getId())) {
 	        throw new ResourceNotFoundException("Schedule does not belong to this provider");
 	    }
-
+	    
 	    if (schedule.getStatus() == ScheduleStatus.INACTIVE) {
+	    	
 	        throw new IllegalStateException("Schedule already cancelled");
 	    }
 
