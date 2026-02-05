@@ -15,4 +15,6 @@ public interface AdminService {
 
     AdminSummaryResponse getSummary();
 
+	void changeUserStatus(Long userId, boolean active);
+
 }

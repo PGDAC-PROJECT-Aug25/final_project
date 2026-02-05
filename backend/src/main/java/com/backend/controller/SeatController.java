@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin
 public class SeatController {
 
     private final BusService busService;

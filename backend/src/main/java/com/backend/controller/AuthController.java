@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,9 +13,11 @@ import com.backend.dto.CustomerRegisterRequest;
 import com.backend.dto.LoginRequest;
 import com.backend.dto.ProviderRegisterRequest;
 import com.backend.entity.ServiceProvider;
+import com.backend.entity.User;
 import com.backend.exception.IllegalStateException;
 import com.backend.exception.ResourceNotFoundException;
 import com.backend.repository.ProviderRepository;
+import com.backend.repository.UserRepository;
 import com.backend.security.JwtUtils;
 import com.backend.security.UserPrincipal;
 import com.backend.service.AuthService;
@@ -26,12 +29,14 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@CrossOrigin
 public class AuthController {
 
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final ProviderRepository providerRepository;
+    private final UserRepository userRepository;
 
     @PostMapping("/register/customer")
     public ResponseEntity<String> registerCustomer(
@@ -60,6 +65,14 @@ public class AuthController {
         Authentication fullyAuth = authenticationManager.authenticate(holder);
 
         UserPrincipal principal = (UserPrincipal) fullyAuth.getPrincipal();
+        
+        User user = userRepository.findById(principal.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
+        if (!Boolean.TRUE.equals(user.getIsActive())) {
+            throw new IllegalStateException("Your account has been deactivated. Please contact admin.");
+        }
+       
 
         //PROVIDER VERIFICATION CHECK
         if ("ROLE_PROVIDER".equals(principal.getUserRole())) {

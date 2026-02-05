@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/provider")
 @RequiredArgsConstructor
+@CrossOrigin
 public class ProviderBusController {
 
     private final BusService busService;

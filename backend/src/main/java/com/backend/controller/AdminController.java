@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
+@CrossOrigin
 public class AdminController {
 
     private final AdminService adminService;
@@ -56,5 +57,18 @@ public class AdminController {
             new ApiResponse<>(true, "Admin summary fetched", adminService.getSummary())
         );
     }
+    
+    @PutMapping("/users/{userId}/status")
+    public ResponseEntity<?> changeUserStatus(
+            @PathVariable Long userId,
+            @RequestParam boolean active) {
+
+        adminService.changeUserStatus(userId, active);
+
+        return ResponseEntity.ok(
+            new ApiResponse<>(true, "User status updated", null)
+        );
+    }
+
 
 }

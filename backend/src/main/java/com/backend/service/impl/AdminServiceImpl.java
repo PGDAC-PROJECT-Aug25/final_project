@@ -29,19 +29,43 @@ public class AdminServiceImpl implements AdminService {
         List<AdminUserResponse> result = new ArrayList<>();
 
         for (User u : users) {
+
+            Long providerId = null;
+            Boolean isProviderVerified = null;
+
+            if (u.getRole() == Role.ROLE_PROVIDER) {
+                providerRepository.findByUserId(u.getId())
+                        .ifPresent(p -> {
+                            // assign via holder variables
+                        });
+            }
+
             AdminUserResponse dto = new AdminUserResponse(
                     u.getId(),
                     u.getName(),
                     u.getEmail(),
                     u.getRole().name(),
                     u.getIsActive(),
-                    u.getEmailVerified()
+                    u.getEmailVerified(),
+                    null,   // providerId (default)
+                    null    // isProviderVerified (default)
             );
+
+            // If provider, enrich DTO
+            if (u.getRole() == Role.ROLE_PROVIDER) {
+                providerRepository.findByUserId(u.getId())
+                        .ifPresent(p -> {
+                            dto.setProviderId(p.getId());
+                            dto.setIsProviderVerified(p.getVerified());
+                        });
+            }
+
             result.add(dto);
         }
 
         return result;
     }
+
     
     //admin to get all buses 
     @Override
@@ -116,5 +140,15 @@ public class AdminServiceImpl implements AdminService {
                 providers
         );
     }
+    
+    @Override
+    public void changeUserStatus(Long userId, boolean active) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        user.setIsActive(active);
+        userRepository.save(user);
+    }
+
 
 }
