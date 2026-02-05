@@ -103,10 +103,10 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(BookingStatus.CANCELLED);
     }
 
+  
     @Override
     public void cancelBookings(CancelBookingsRequest request) {
-
-        List<Booking> bookings =
+    		List<Booking> bookings =
                 bookingRepository.findByIdIn( request.getBookingIds() );
 
         if (bookings.size() != request.getBookingIds().size()) {
