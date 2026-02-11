@@ -11,6 +11,9 @@ import com.backend.exception.ResourceNotFoundException;
 import com.backend.repository.*;
 import com.backend.service.AdminService;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -39,6 +42,7 @@ public class AdminServiceImpl implements AdminService {
                             // assign via holder variables
                         });
             }
+
 
             AdminUserResponse dto = new AdminUserResponse(
                     u.getId(),
