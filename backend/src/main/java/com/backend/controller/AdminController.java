@@ -3,9 +3,18 @@ package com.backend.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.backend.dto.*;
+import com.backend.dto.AdminBookingResponse;
+import com.backend.dto.AdminBusResponse;
+import com.backend.dto.AdminSummaryResponse;
+import com.backend.dto.AdminUserResponse;
 import com.backend.service.AdminService;
 import com.backend.util.ApiResponse;
 
@@ -22,8 +31,10 @@ public class AdminController {
     
 
     @GetMapping("/buses")
+
     public ResponseEntity<ApiResponse<List<AdminBusResponse>>> buses() {
         return ResponseEntity.ok(
+
                 new ApiResponse<>(true, "Buses fetched", adminService.getAllBuses())
         );
     }

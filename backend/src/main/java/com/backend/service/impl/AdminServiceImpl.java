@@ -5,15 +5,22 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.backend.dto.*;
-import com.backend.entity.*;
+import com.backend.dto.AdminBookingResponse;
+import com.backend.dto.AdminBusResponse;
+import com.backend.dto.AdminSummaryResponse;
+import com.backend.dto.AdminUserResponse;
+import com.backend.entity.Booking;
+import com.backend.entity.Bus;
+import com.backend.entity.Role;
+import com.backend.entity.ServiceProvider;
+import com.backend.entity.User;
 import com.backend.exception.ResourceNotFoundException;
-import com.backend.repository.*;
+import com.backend.repository.BookingRepository;
+import com.backend.repository.BusRepository;
+import com.backend.repository.ProviderRepository;
+import com.backend.repository.UserRepository;
 import com.backend.service.AdminService;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -29,11 +36,13 @@ public class AdminServiceImpl implements AdminService {
     public List<AdminUserResponse> getAllUsers() {
 
         List<User> users = userRepository.findAll();
+
         List<AdminUserResponse> result = new ArrayList<>();
 
         for (User u : users) {
 
             Long providerId = null;
+            
             Boolean isProviderVerified = null;
 
             if (u.getRole() == Role.ROLE_PROVIDER) {
