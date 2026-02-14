@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { isTokenExpired } from '../utils/jwtUtils';
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.DEV ? '' : 'http://localhost:8080',
+  baseURL: import.meta.env.DEV ? '' : 'https://enjoy-travelling-with-us-bckend.onrender.coms',
   headers: {
     'Content-Type': 'application/json',
   },
